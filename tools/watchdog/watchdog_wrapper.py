@@ -24,7 +24,7 @@ import os
 import sys
 
 # Variable templates
-LIBDIR = '/usr/local/lib'
+LIBDIRS = ['/usr/local/lib', '/usr/lib']
 PROGRAM_PATH = 'watchdog.main'
 NEEDS_GTK=False
 NEEDS_GST=False
@@ -32,12 +32,14 @@ NEEDS_GST=False
 try:
     # setup the project root
     dir = os.path.dirname(os.path.abspath(__file__))
-    if os.path.exists(os.path.join(dir, '..', 'flumotion', '.svn')) or \
-       os.path.exists(os.path.join(dir, '..', '.git')):
-        root = os.path.split(dir)[0]
+
+    if os.path.exists(os.path.join(dir, '..', 'flumotion', '.git')):
+        sys.path.insert(0, os.path.join(dir, '..', 'flumotion'))
     else:
-        root = os.path.join(LIBDIR, 'flumotion', 'python')
-    sys.path.insert(0, root)
+        for libdir in LIBDIRS:
+            full_libdir = os.path.join(libdir, 'flumotion', 'python')
+            if os.path.exists(full_libdir):
+                sys.path.insert(0, full_libdir)
 
     import warnings
     warnings.filterwarnings('ignore', category=UserWarning)
